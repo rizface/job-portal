@@ -60,7 +60,8 @@ func (a *auth) Register(request request.Auth, collection string) string {
 	defer cancel()
 	insertId,err := a.repo.Register(a.db,ctx,request,collection)
 	helper.PanicException(exception.InternalServerError{Err:"terjadi kesalahan pada sistem kami"}, err != nil)
-	myredis.RedisPublish("job-portal-email",request.Email,insertId)
+	activateUrl := "company/" + insertId.(string)
+	myredis.RedisPublish("job-portal-email",request.Email,activateUrl)
 	return "registrasi berhasil,silahakan periksa email untuk melakukan aktifasi akun"
 }
 

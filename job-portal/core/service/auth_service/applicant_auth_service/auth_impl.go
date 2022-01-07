@@ -3,11 +3,13 @@ package applicant_auth_service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/mongo"
 	"job-portal/app/exception"
 	"job-portal/app/model/request"
 	"job-portal/app/model/response"
+	"job-portal/app/validation"
 	myredis "job-portal/core/redis"
 	"job-portal/core/repository/auth_repo"
 	"job-portal/core/service/auth_service"
@@ -48,7 +50,9 @@ func (a *auth) Login(request request.Auth,collection string) string {
 
 func (a *auth) Register(request request.Auth,collection string) string {
 	err := a.valid.Struct(request)
-	helper.PanicException(exception.BadRequest{Err:"data yang anda kirim tidak valid"},err != nil)
+	if err != nil {
+		validation.Validation(err)
+	}
 	hash,err := helper.GeneratePassword(request.Password)
 	helper.PanicException(exception.InternalServerError{Err:"terjadi kesalahan pada sistem kami"}, err != nil)
 	request.Password = hash
@@ -56,8 +60,10 @@ func (a *auth) Register(request request.Auth,collection string) string {
 	ctx,cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()
 	insertId,err := a.repo.Register(a.db,ctx,request,collection)
+	fmt.Println(insertId)
 	helper.PanicException(exception.InternalServerError{Err:"terjadi kesalahan pada sistem kami"}, err != nil)
-	myredis.RedisPublish("job-portal-email",request.Email,insertId)
+	activateUrl := "applicant/"+insertId.(string)
+	myredis.RedisPublish("job-portal-email",request.Email,activateUrl)
 	return "registrasi berhasil, periksa email kamu untuk melakukan aktifasi akun"
 }
 

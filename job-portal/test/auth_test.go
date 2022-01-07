@@ -36,7 +36,7 @@ func TestRegister(t *testing.T) {
 				Password: "rahasia",
 				Level:    "company",
 			},"companies")
-			assert.True(t, result)
+			assert.True(t, result != nil)
 			assert.Nil(t, err)
 		})
 		t.Run("applicant", func(t *testing.T) {
@@ -46,7 +46,7 @@ func TestRegister(t *testing.T) {
 				Password: "rahasia",
 				Level:    "applicant",
 			},"applicants")
-			assert.True(t, result)
+			assert.True(t, result != nil)
 			assert.Nil(t, err)
 		})
 	})

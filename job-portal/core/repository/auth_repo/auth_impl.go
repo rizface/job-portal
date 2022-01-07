@@ -23,6 +23,9 @@ func (a *auth) Register(db *mongo.Database, ctx context.Context, request request
 		"status": false,
 		"createdAt": time.Now(),
 	})
+	if err != nil {
+		return nil,err
+	}
 	return result.InsertedID.(primitive.ObjectID).Hex(),err
 }
 

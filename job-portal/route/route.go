@@ -10,9 +10,8 @@ const(
 	ACTIVATE_APPLICANT = "/applicant/{userId}"
 	ACTIVATE_COMPANY = "/company/{userId}"
 
-
-	APPLICANT_PROFILE = "/profile/applicants/{applicantId}"
-	COMPANY_PROFILE = "/profile/companys/{companyId}"
+	APPLICANT_PROFILE = "/profile/applicants"
+	COMPANY_PROFILE = "/profile/companies"
 
 	JOBS = "/jobs" // GET ALL JOBS & POST JOB FOR COMPANY
 	JOBS_RECOMENDATION = "/jobs/recommendation" // JOB RECOMMENDATION FOR APPLICANT

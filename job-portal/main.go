@@ -10,6 +10,8 @@ import (
 
 func main() {
 	setup.Auth()
+	setup.ApplicantProfile()
+	setup.CompanyProfile()
 
 	err := http.ListenAndServe(":"+config.APP_PORT,setup.Mux)
 	helper.PanicException(exception2.InternalServerError{Err:"terjadi kesalahan saat memulai server"},err != nil)

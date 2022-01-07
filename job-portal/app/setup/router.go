@@ -1,6 +1,6 @@
 package setup
 
-import (
+import 	(
 	"github.com/gorilla/mux"
 	"job-portal/app/middleware"
 	"job-portal/route"
@@ -23,5 +23,23 @@ func Auth() *mux.Router {
 	router.HandleFunc(route.LOGIN_COMPANY,companyController.Login).Methods(http.MethodPost)
 	router.HandleFunc(route.REGISTER_COMPANY,companyController.Register).Methods(http.MethodPost)
 	router.HandleFunc(route.ACTIVATE_COMPANY,companyController.Aktivasi).Methods(http.MethodGet)
+	return router
+}
+
+func ApplicantProfile() *mux.Router {
+	applicant := ApplicantProfileController()
+	router := Mux.NewRoute().Subrouter()
+	router.Use(middleware.ErrorHandler,middleware.ApplicantAuth)
+	router.HandleFunc(route.APPLICANT_PROFILE,applicant.GetDetail).Methods(http.MethodGet)
+	router.HandleFunc(route.APPLICANT_PROFILE,applicant.UpdateDetail).Methods(http.MethodPut)
+	return router
+}
+
+func CompanyProfile() *mux.Router {
+	company := CompanyProfileController()
+	router := Mux.NewRoute().Subrouter()
+	router.Use(middleware.ErrorHandler,middleware.CompanyAuth)
+	router.HandleFunc(route.COMPANY_PROFILE,company.GetDetail).Methods(http.MethodGet)
+	router.HandleFunc(route.COMPANY_PROFILE,company.UpdateDetail).Methods(http.MethodPut)
 	return router
 }
