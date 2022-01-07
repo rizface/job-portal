@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  mongodb:
+    container_name: job-portal
+    ports:
+      - "27017:27017"
+    command: mongod --auth
+    image: mongo
+  redis:
+    container_name: redis-job-portal
+    ports:
+      - "6379:6379"
+    image: redis
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./app/redis-conf/redis.conf:/usr/local/etc/redis/redis.conf
