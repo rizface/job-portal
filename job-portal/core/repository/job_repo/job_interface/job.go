@@ -20,9 +20,9 @@ type ApplicantApplication interface {
 }
 
 type ManipulationJob interface {
-	PostJob(db *mongo.Database, ctx context.Context, companyId string, request request.Job) (bool, error)
+	PostJob(db *mongo.Database, ctx context.Context, companyName string, request request.Job) (interface{}, error)
 	DetailJob(db *mongo.Database, ctx context.Context, jobId string) *mongo.SingleResult
-	DeleteJob(db *mongo.Database, ctx context.Context, companyId,jobId string) (bool, error)
-	UpdateJob(db *mongo.Database, ctx context.Context, request request.Job, companyId,jobId string) (bool, error)
-	TmpTakeDown(db *mongo.Database, ctx context.Context, current response.Job,companyId string) (bool, error)
+	DeleteJob(db *mongo.Database, ctx context.Context, companyName,jobId string) (bool, error)
+	UpdateJob(db *mongo.Database, ctx context.Context, request request.Job, companyName,jobId string) (bool, error)
+	TmpTakeDown(db *mongo.Database, ctx context.Context, current response.Job,companyName string) (bool, error)
 }

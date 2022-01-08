@@ -2,7 +2,6 @@ package request
 
 import (
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"job-portal/app/exception"
 	"job-portal/app/model"
 	"time"
@@ -33,6 +32,5 @@ func (j *Job) Convert() bson.M {
 	if err != nil {
 		panic(exception.InternalServerError{Err: "terjadi kesalahan pada sistem kami"})
 	}
-	bsonObject["id"] = primitive.NewObjectID()
 	return bsonObject
 }

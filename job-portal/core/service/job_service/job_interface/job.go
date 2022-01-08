@@ -6,9 +6,9 @@ import (
 )
 
 type ManipulationJob interface {
-	PostJob(companyId string, request request.Job) string
+	PostJob(companyName string, request request.Job) string
 	DetailJob(jobId string) response.Job
-	DeleteJob(companyId,jobId string) string
-	UpdateJob(request request.Job, companyId,jobId string) string
-	TmpTakeDown(companyId,jobId string) string
+	DeleteJob(companyName,jobId string) string
+	UpdateJob(request request.Job, companyName,jobId string) string
+	TmpTakeDown(companyName,jobId string) string
 }

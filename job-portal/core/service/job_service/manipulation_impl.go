@@ -3,8 +3,8 @@ package job_service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/go-playground/validator/v10"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"job-portal/app/exception"
@@ -31,46 +31,37 @@ func NewJobManipulation(db *mongo.Database, valid *validator.Validate, repo job_
 	}
 }
 
-func (j *jobManipulationService) PostJob(companyId string,request request.Job) string {
-	valid := primitive.IsValidObjectID(companyId)
-	helper.PanicException(exception.NotFouund{Err: "company tidak ditemukan"}, valid == false)
+func (j *jobManipulationService) PostJob(companyName string,request request.Job) string {
 	err := j.valid.Struct(request)
 	if err != nil {
 		validation.Validation(err)
 	}
 	ctx,cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()
-	success,err := j.repo.PostJob(j.db,ctx,companyId,request)
+	success,err := j.repo.PostJob(j.db,ctx,companyName,request)
 	helper.PanicException(exception.InternalServerError{Err:"terjadi kesalahan pada sistem kami"}, err != nil)
-	if success {
+	if success != nil {
 		return "pekerjaan berhasil diposting"
 	}
 	return "pekerjaan gagal diposting"
 }
 
 func (j *jobManipulationService) DetailJob(jobId string) response.Job {
-	var obj bson.M
 	var result response.Job
-	valid := primitive.IsValidObjectID(jobId)
-	helper.PanicException(exception.NotFouund{Err:"pekerjaan tidak ditemukan"}, valid == false)
 	ctx,cancel := context.WithTimeout(context.Background(), 10 * time.Second)
 	defer cancel()
 	cursor := j.repo.DetailJob(j.db,ctx,jobId)
-	err := cursor.Decode(&obj)
+	err := cursor.Decode(&result)
 	helper.PanicException(exception.NotFouund{Err:"pekerjaan tidak ditemukan"}, errors.Is(err,mongo.ErrNoDocuments))
-	bsonBytes,_ := bson.Marshal(obj["jobs"].(bson.A)[0])
-	bson.Unmarshal(bsonBytes,&result)
 	return result
 }
 
-func (j *jobManipulationService) DeleteJob(companyId,jobId string) string {
-	valid := primitive.IsValidObjectID(companyId)
-	helper.PanicException(exception.NotFouund{Err:"company tidak ditemukan"},valid == false)
-	valid = primitive.IsValidObjectID(jobId)
+func (j *jobManipulationService) DeleteJob(companyName,jobId string) string {
+	valid := primitive.IsValidObjectID(jobId)
 	helper.PanicException(exception.NotFouund{Err:"pekerjaan tidak ditemukan"},valid == false)
 	ctx,cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()
-	success,err := j.repo.DeleteJob(j.db,ctx,companyId,jobId)
+	success,err := j.repo.DeleteJob(j.db,ctx,companyName,jobId)
 	helper.PanicException(exception.InternalServerError{Err:"terjadi kesalahan pada sistem kami"}, err != nil)
 	if success {
 		return "pekerjaan berhasil dihapus"
@@ -78,18 +69,16 @@ func (j *jobManipulationService) DeleteJob(companyId,jobId string) string {
 	return "pekerjaan gagal dihapus"
 }
 
-func (j *jobManipulationService) UpdateJob(request request.Job, companyId,jobId string) string {
+func (j *jobManipulationService) UpdateJob(request request.Job, companyName,jobId string) string {
 	err := j.valid.Struct(request)
 	if err != nil {
 		validation.Validation(err)
 	}
-	valid := primitive.IsValidObjectID(companyId)
-	helper.PanicException(exception.NotFouund{Err:"company tidak ditemukan"}, valid == false)
-	valid = primitive.IsValidObjectID(jobId)
+	valid := primitive.IsValidObjectID(jobId)
 	helper.PanicException(exception.NotFouund{Err:"pekerjaan tidak ditemukan"}, valid == false)
 	ctx,cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()
-	success,err := j.repo.UpdateJob(j.db,ctx,request,companyId,jobId)
+	success,err := j.repo.UpdateJob(j.db,ctx,request,companyName,jobId)
 	helper.PanicException(exception.InternalServerError{Err:"terjadi kesalahan pada sistem kami"}, err != nil)
 	if success {
 		return "pekerjaan berhasil diupdate"
@@ -97,15 +86,14 @@ func (j *jobManipulationService) UpdateJob(request request.Job, companyId,jobId 
 	return "pekerjaan gagal diupdate"
 }
 
-func (j *jobManipulationService) TmpTakeDown(companyId,jobId string) string {
-	valid := primitive.IsValidObjectID(companyId)
-	helper.PanicException(exception.NotFouund{Err:"company tidak ditemukan"}, valid == false)
-	valid = primitive.IsValidObjectID(jobId)
+func (j *jobManipulationService) TmpTakeDown(companyName,jobId string) string {
+	valid := primitive.IsValidObjectID(jobId)
 	helper.PanicException(exception.NotFouund{Err:"pekerjaan tidak ditemukan"}, valid == false)
 	ctx,cancel := context.WithTimeout(context.Background(), 10 * time.Second)
 	defer cancel()
 	current := j.DetailJob(jobId)
-	success,err := j.repo.TmpTakeDown(j.db,ctx,current,companyId)
+	fmt.Println(current)
+	success,err := j.repo.TmpTakeDown(j.db,ctx,current,companyName)
 	helper.PanicException(exception.InternalServerError{Err:"terjadi kesalahan pada sistem kami"}, err != nil)
 	if success {
 		return "status pekerjaan berhasil diupdate"

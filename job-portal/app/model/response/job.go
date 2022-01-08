@@ -6,7 +6,7 @@ import (
 )
 
 type Job struct {
-	Id        primitive.ObjectID `json:"id" bson:"id"`
+	Id        primitive.ObjectID `json:"id" bson:"_id"`
 	Title     string             `json:"title"  bson:"title""`
 	Detail    string             `json:"detail" bson:"detail"`
 	MinSalary interface{}        `json:"min_salary" bson:"min_salary"`

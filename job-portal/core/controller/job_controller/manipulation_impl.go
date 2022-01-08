@@ -22,7 +22,7 @@ func (j *jobManipulation) PostJob(w http.ResponseWriter, r *http.Request) {
 	var request request2.Job
 	err := json.NewDecoder(r.Body).Decode(&request)
 	helper.PanicException(exception.InternalServerError{Err:"terjadi kesalahan pada sistem kami"}, err != nil)
-	companyId := helper.GetTokenValue(r.Context().Value("company-data"),"id")
+	companyId := helper.GetTokenValue(r.Context().Value("company-data"),"NamaPerusahaan")
 	result := j.service.PostJob(companyId,request)
 	helper.JsonWriter(w,http.StatusOK,result,nil)
 }
@@ -36,7 +36,7 @@ func (j *jobManipulation) DetailJob(w http.ResponseWriter, r *http.Request) {
 }
 
 func (j *jobManipulation) DeleteJob(w http.ResponseWriter, r *http.Request) {
-	companyId := helper.GetTokenValue(r.Context().Value("company-data"),"id")
+	companyId := helper.GetTokenValue(r.Context().Value("company-data"),"NamaPerusahaan")
 	jobId := helper.GetParamsValue(r,"jobId")
 	result := j.service.DeleteJob(companyId,jobId)
 	helper.JsonWriter(w,http.StatusOK,result,nil)
@@ -46,14 +46,14 @@ func (j *jobManipulation) UpdateJob(w http.ResponseWriter, r *http.Request) {
 	var request request2.Job
 	err := json.NewDecoder(r.Body).Decode(&request)
 	helper.PanicException(exception.InternalServerError{Err:"terjadi kesalahan pada sistem kami"}, err != nil)
-	companyId := helper.GetTokenValue(r.Context().Value("company-data"),"id")
+	companyId := helper.GetTokenValue(r.Context().Value("company-data"),"NamaPerusahaan")
 	jobId := helper.GetParamsValue(r,"jobId")
 	result := j.service.UpdateJob(request,companyId,jobId)
 	helper.JsonWriter(w,http.StatusOK,result,nil)
 }
 
 func (j *jobManipulation) TakeDown(w http.ResponseWriter, r *http.Request) {
-	companyId := helper.GetTokenValue(r.Context().Value("company-data"),"id")
+	companyId := helper.GetTokenValue(r.Context().Value("company-data"),"NamaPerusahaan")
 	jobId := helper.GetParamsValue(r,"jobId")
 	result := j.service.TmpTakeDown(companyId,jobId)
 	helper.JsonWriter(w,http.StatusOK,result,nil)
