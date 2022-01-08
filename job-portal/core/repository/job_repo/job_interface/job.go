@@ -7,7 +7,7 @@ import (
 	"job-portal/app/model/response"
 )
 
-type ApplicantFindJon interface {
+type ApplicantFindJob interface {
 	GetJob()
 	JobRecomendation()
 }
@@ -22,7 +22,7 @@ type ApplicantApplication interface {
 type ManipulationJob interface {
 	PostJob(db *mongo.Database, ctx context.Context, companyId string, request request.Job) (bool, error)
 	DetailJob(db *mongo.Database, ctx context.Context, jobId string) *mongo.SingleResult
-	DeleteJOb(db *mongo.Database, ctx context.Context, jobId string) (bool, error)
-	UpdateJob(db *mongo.Database, ctx context.Context, request request.Job, jobId string) (bool, error)
-	TmpTakeDown(db *mongo.Database, ctx context.Context, current response.Job) (bool, error)
+	DeleteJob(db *mongo.Database, ctx context.Context, companyId,jobId string) (bool, error)
+	UpdateJob(db *mongo.Database, ctx context.Context, request request.Job, companyId,jobId string) (bool, error)
+	TmpTakeDown(db *mongo.Database, ctx context.Context, current response.Job,companyId string) (bool, error)
 }

@@ -26,7 +26,7 @@ func TestDeleteJob(t *testing.T) {
 	t.Run("repository", func(t *testing.T) {
 		t.Run("success", func(t *testing.T) {
 			repo := job_repo.NewManipulationJob()
-			repo.DeleteJOb(helper.Connection(), context.Background(), "61d84e096b9ff3da2a297483")
+			repo.DeleteJob(helper.Connection(), context.Background(), "asd","61d84e096b9ff3da2a297483")
 		})
 	})
 }
@@ -42,7 +42,7 @@ func TestUpdateStatusJobs(t *testing.T) {
 			current.Decode(&result)
 			bsonBytes, _ := bson.Marshal(result["jobs"].(bson.A)[0])
 			bson.Unmarshal(bsonBytes, &res)
-			repo.TmpTakeDown(db, context.Background(), res)
+			repo.TmpTakeDown(db, context.Background(), res,"Asd")
 		})
 	})
 }
@@ -57,7 +57,7 @@ func TestUpdateJobs(t *testing.T) {
 				Detail:    "ini kerja untuk junior backend",
 				MinSalary: 5000000,
 				MaxSalary: 100000000,
-			},"61d84261163b46b2f3d4d92a")
+			},"61d84261163b46b2f3d4d92a","asd")
 		})
 	})
 }

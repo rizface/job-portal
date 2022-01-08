@@ -40,9 +40,12 @@ func (m manipulationJob) DetailJob(db *mongo.Database, ctx context.Context, jobI
 	return cursor
 }
 
-func (m manipulationJob) DeleteJOb(db *mongo.Database, ctx context.Context, jobId string) (bool, error) {
+func (m manipulationJob) DeleteJob(db *mongo.Database, ctx context.Context, companyId,jobId string) (bool, error) {
 	objJob, _ := primitive.ObjectIDFromHex(jobId)
-	result, err := db.Collection("companies").UpdateOne(ctx, bson.M{}, bson.M{
+	objCompany,_ := primitive.ObjectIDFromHex(companyId)
+	result, err := db.Collection("companies").UpdateOne(ctx, bson.M{
+		"_id":objCompany,
+	}, bson.M{
 		"$pull": bson.M{
 			"jobs": bson.M{"id": objJob},
 		},
@@ -53,10 +56,15 @@ func (m manipulationJob) DeleteJOb(db *mongo.Database, ctx context.Context, jobI
 	return result.ModifiedCount > 0, nil
 }
 
-func (m manipulationJob) UpdateJob(db *mongo.Database, ctx context.Context, request request.Job, jobId string) (bool, error) {
+func (m manipulationJob) UpdateJob(db *mongo.Database, ctx context.Context, request request.Job, companyId,jobId string) (bool, error) {
 	objJob, _ := primitive.ObjectIDFromHex(jobId)
+	objCompany,_ := primitive.ObjectIDFromHex(companyId)
 	result,err := db.Collection("companies").UpdateOne(ctx, bson.M{
-		"jobs.id":objJob,
+		"$and":bson.A{
+			bson.M{"_id":objCompany},
+			bson.M{"jobs.id":objJob},
+		},
+
 	}, bson.M{
 		"$set": bson.M{
 			"jobs.$.title":      request.Title,
@@ -71,9 +79,13 @@ func (m manipulationJob) UpdateJob(db *mongo.Database, ctx context.Context, requ
 	return result.ModifiedCount > 0, err
 }
 
-func (m manipulationJob) TmpTakeDown(db *mongo.Database, ctx context.Context,current response.Job) (bool, error) {
+func (m manipulationJob) TmpTakeDown(db *mongo.Database, ctx context.Context,current response.Job,companyId string) (bool, error) {
+	objCompany,_ := primitive.ObjectIDFromHex(companyId)
 	result,err := db.Collection("companies").UpdateOne(ctx,bson.M{
-		"jobs.id":current.Id,
+		"$and":bson.A{
+			bson.M{"_id":objCompany},
+			bson.M{"jobs.id":current.Id},
+		},
 	},bson.M{
 		"$set":bson.M{
 			"jobs.$.status":!current.Status,

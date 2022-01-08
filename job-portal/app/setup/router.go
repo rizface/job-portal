@@ -43,3 +43,14 @@ func CompanyProfile() *mux.Router {
 	router.HandleFunc(route.COMPANY_PROFILE,company.UpdateDetail).Methods(http.MethodPut)
 	return router
 }
+
+func JobManipulationForCompany() *mux.Router {
+	controller := JobManipulationController()
+	router := Mux.NewRoute().Subrouter()
+	router.Use(middleware.ErrorHandler,middleware.CompanyAuth)
+	router.HandleFunc(route.JOB_MANIPULATION,controller.UpdateJob).Methods(http.MethodPut)
+	router.HandleFunc(route.JOB_MANIPULATION,controller.DeleteJob).Methods(http.MethodDelete)
+	router.HandleFunc(route.JOBS,controller.PostJob).Methods(http.MethodPost)
+	router.HandleFunc(route.JOB_TAKEDOWN,controller.TakeDown).Methods(http.MethodPut)
+	return router
+}
