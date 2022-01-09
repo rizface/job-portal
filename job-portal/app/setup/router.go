@@ -10,8 +10,8 @@ import 	(
 var Mux = mux.NewRouter()
 
 func Auth() *mux.Router {
-	applicantController := ApplicantAuthController()
-	companyController := CompanyAuthController()
+	applicantController := applicantAuthController()
+	companyController := companyAuthController()
 	router := Mux.NewRoute().Subrouter()
 	router.Use(middleware.ErrorHandler)
 
@@ -27,7 +27,7 @@ func Auth() *mux.Router {
 }
 
 func ApplicantProfile() *mux.Router {
-	applicant := ApplicantProfileController()
+	applicant := applicantProfileController()
 	router := Mux.NewRoute().Subrouter()
 	router.Use(middleware.ErrorHandler,middleware.ApplicantAuth)
 	router.HandleFunc(route.APPLICANT_PROFILE,applicant.GetDetail).Methods(http.MethodGet)
@@ -36,7 +36,7 @@ func ApplicantProfile() *mux.Router {
 }
 
 func CompanyProfile() *mux.Router {
-	company := CompanyProfileController()
+	company := companyProfileController()
 	router := Mux.NewRoute().Subrouter()
 	router.Use(middleware.ErrorHandler,middleware.CompanyAuth)
 	router.HandleFunc(route.COMPANY_PROFILE,company.GetDetail).Methods(http.MethodGet)
@@ -45,13 +45,28 @@ func CompanyProfile() *mux.Router {
 }
 
 func JobManipulationForCompany() *mux.Router {
-	controller := JobManipulationController()
+	controller := jobManipulationController()
 	router := Mux.NewRoute().Subrouter()
 	router.Use(middleware.ErrorHandler,middleware.CompanyAuth,middleware.CompanyCompleteProfile)
 	router.HandleFunc(route.JOB_MANIPULATION,controller.UpdateJob).Methods(http.MethodPut)
-	router.HandleFunc(route.JOB_MANIPULATION,controller.DetailJob).Methods(http.MethodGet)
 	router.HandleFunc(route.JOB_MANIPULATION,controller.DeleteJob).Methods(http.MethodDelete)
 	router.HandleFunc(route.JOBS,controller.PostJob).Methods(http.MethodPost)
 	router.HandleFunc(route.JOB_TAKEDOWN,controller.TakeDown).Methods(http.MethodPut)
+	return router
+}
+
+func DetailJob() *mux.Router {
+	controller := jobManipulationController()
+	router := Mux.NewRoute().Subrouter()
+	router.Use(middleware.ErrorHandler,middleware.MixAuth)
+	router.HandleFunc(route.JOB_MANIPULATION,controller.DetailJob).Methods(http.MethodGet)
+	return router
+}
+
+func FindJob() *mux.Router {
+	controller := findJobController()
+	router := Mux.NewRoute().Subrouter()
+	router.Use(middleware.ErrorHandler,middleware.ApplicantAuth)
+	router.HandleFunc(route.JOBS,controller.GetJobs).Methods(http.MethodGet)
 	return router
 }

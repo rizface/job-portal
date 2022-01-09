@@ -38,7 +38,7 @@ func (a *auth) Login(request request.Auth,collection string) string {
 	request.Level = "applicant"
 	cursor := a.repo.Login(a.db,ctx,request,collection)
 	err := cursor.Decode(&result)
-	helper.PanicException(exception.NotFouund{Err:"akun kamu tidak terdaftar"},errors.Is(err,mongo.ErrNoDocuments))
+	helper.PanicException(exception.NotFound{Err: "akun kamu tidak terdaftar"},errors.Is(err,mongo.ErrNoDocuments))
 	helper.PanicException(exception.InternalServerError{Err:"terjadi kesalahan pada sistem kami"},err != nil)
 	helper.PanicException(exception.Forbidden{Err: "lakukan aktifasi akun terlebih dahulu,cek email kamu"}, result.Status == false)
 	err = helper.ComparePassword(request.Password,result.Password)

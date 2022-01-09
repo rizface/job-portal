@@ -7,13 +7,22 @@ import (
 	"time"
 )
 
+type MinQualification struct {
+	Requirements []string `json:"requirements" bson:"requirements"`
+	Prefered     []string `json:"prefered" bson:"prefered"`
+}
+
 type Job struct {
-	Title     string    `json:"title"  bson:"title" validate:"required"`
-	Detail    string    `json:"detail" bson:"detail" validate:"required"`
-	MinSalary int64     `json:"min_salary" bson:"min_salary"`
-	MaxSalary int64     `json:"max_salary" bson:"max_salary"`
-	Status    bool      `bson:"status"`
-	CreatedAt time.Time `json:"created_at" bson:"created_at"`
+	Id               string           `json:"id"  bson:"_id"`
+	Title            string           `json:"title"  bson:"title" validate:"required"`
+	Location         string           `json:"location" bson:"location"`
+	MinSalary        int64            `json:"min_salary" bson:"min_salary"`
+	MaxSalary        int64            `json:"max_salary" bson:"max_salary"`
+	Type             string           `json:"type" bson:"type"`
+	JobDescription   string           `json:"job_description" bson:"job_description"`
+	MinQualification MinQualification `json:"min_qualification" bson:"min_qualification"`
+	Status           bool             `bson:"status"`
+	CreatedAt        time.Time        `bson:"created_at"`
 }
 
 func NewJob() model.Object {

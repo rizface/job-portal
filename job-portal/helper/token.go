@@ -14,17 +14,17 @@ import (
 var secret = os.Getenv("JWT_SECRET")
 
 type Applicant struct {
-	Id                             primitive.ObjectID
-	NamaDepan, NamaBelakang, Email string
-	Status                         bool
+	Id                                    primitive.ObjectID
+	NamaDepan, NamaBelakang, Email, Level string
+	Status                                bool
 	jwt.RegisteredClaims
 	_ struct{}
 }
 
 type Company struct {
-	Id                    primitive.ObjectID
-	NamaPerusahaan, Email string
-	Status                bool
+	Id                           primitive.ObjectID
+	NamaPerusahaan, Email, Level string
+	Status                       bool
 	jwt.RegisteredClaims
 	_ struct{}
 }
@@ -36,6 +36,7 @@ func GenerateApplicantToken(applicant response.Applicant) (string, error) {
 		NamaBelakang: applicant.NamaBelakang,
 		Email:        applicant.Email,
 		Status:       applicant.Status,
+		Level:        applicant.Level,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Hour)),
 		},
@@ -51,6 +52,7 @@ func GenerateCompanyToken(company response.Company) (string, error) {
 		NamaPerusahaan: company.NamaPerusahaan,
 		Email:          company.Email,
 		Status:         company.Status,
+		Level:          company.Level,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(1 * time.Hour)),
 		},
@@ -62,22 +64,22 @@ func GenerateCompanyToken(company response.Company) (string, error) {
 
 func VerifyApplicantToken(tokenString string) interface{} {
 	claims := &Applicant{}
-	tkn,err := jwt.ParseWithClaims(tokenString,claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secret),nil
+	tkn, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(secret), nil
 	})
 	fmt.Println(tkn.Valid)
-	PanicException(exception.UnAuthorized{Err:"token tidak valid"},tkn.Valid == false || err != nil && errors.Is(err,jwt.ErrSignatureInvalid))
-	PanicException(exception.UnAuthorized{Err:"terjadi kesalahan pada sistem kami"},err != nil )
+	PanicException(exception.UnAuthorized{Err: "token tidak valid"}, tkn.Valid == false || err != nil && errors.Is(err, jwt.ErrSignatureInvalid))
+	PanicException(exception.UnAuthorized{Err: "terjadi kesalahan pada sistem kami"}, err != nil)
 	return claims
 }
 
 func VerifyCompanyToken(tokenString string) interface{} {
 	claims := &Company{}
-	tkn,err := jwt.ParseWithClaims(tokenString,claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secret),nil
+	tkn, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(secret), nil
 	})
 
-	PanicException(exception.UnAuthorized{Err:"token tidak valid"},tkn.Valid == false || err != nil && errors.Is(err,jwt.ErrSignatureInvalid))
-	PanicException(exception.UnAuthorized{Err:"terjadi kesalahan pada sistem kami"},err != nil )
+	PanicException(exception.UnAuthorized{Err: "token tidak valid"}, tkn.Valid == false || err != nil && errors.Is(err, jwt.ErrSignatureInvalid))
+	PanicException(exception.UnAuthorized{Err: "terjadi kesalahan pada sistem kami"}, err != nil)
 	return claims
 }

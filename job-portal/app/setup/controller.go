@@ -32,37 +32,44 @@ func init() {
 	//Redis = helper.Redis()
 }
 
-func ApplicantAuthController() auth_controller.Auth{
+func applicantAuthController() auth_controller.Auth{
 	repo := auth_repo.NewAuth()
 	service := applicant_auth_service.NewAuth(Db,Valid,repo)
 	controller := applicant_auth_controller.NewAuth(service)
 	return controller
 }
 
-func CompanyAuthController() auth_controller.Auth {
+func companyAuthController() auth_controller.Auth {
 	repo := auth_repo.NewAuth()
 	service := company_auth_service.NewAuth(Db,Valid,repo)
 	controller := company_auth_controller.NewAuth(service)
 	return controller
 }
 
-func ApplicantProfileController() profile_controller.BasicProfile {
+func applicantProfileController() profile_controller.BasicProfile {
 	repo := applicant_repo_profile.NewProfile()
 	service := applicant_profile_service.NewProfile(Db,Valid,repo)
 	controller := applicant_controller_profile.NewProfile(service)
 	return controller
 }
 
-func CompanyProfileController() profile_controller.BasicProfile {
+func companyProfileController() profile_controller.BasicProfile {
 	repo := company_repo_profile.NewProfile()
 	service := company_profile_service.NewProfile(Db,Valid,repo)
 	controller := company_controller_profile.NewProfile(service)
 	return controller
 }
 
-func JobManipulationController() job_controller_interface.Manipulation {
+func jobManipulationController() job_controller_interface.Manipulation {
 	repo := job_repo.NewManipulationJob()
 	service := job_service.NewJobManipulation(Db,Valid,repo)
 	controller := job_controller.NewJobManipulation(service)
+	return controller
+}
+
+func findJobController() job_controller_interface.ApplicantFindJob {
+	repo := job_repo.NewFindJob()
+	service := job_service.NewFindJob(Db,Valid,repo)
+	controller := job_controller.NewFindJob(service)
 	return controller
 }

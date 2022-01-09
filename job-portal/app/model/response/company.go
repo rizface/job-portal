@@ -14,9 +14,10 @@ type Company struct {
 	DetailPerusahaan string             `json:"detail_perusahaan" bson:"detail_perusahaan"`
 	LinkWebsite      string             `json:"link_website" bson:"link_website"`
 	Alamat           string             `json:"alamat" bson:"alamat"`
-	Jobs             []Job              `json:"jobs,omitempty" bson:"jobs,omitempty"`
+	Level            string             `json:"level" bson:"level"`
 	Password         string             `json:"password,omitempty" bson:"password,omitempty"`
 	Status           bool               `json:"status" bson:"status"`
+	Jobs             []Job              `json:"jobs,omitempty" bson:"jobs,omitempty"`
 }
 
 func NewCompany() model.Object {

@@ -9,3 +9,8 @@ type Manipulation interface {
 	UpdateJob(w http.ResponseWriter, r *http.Request)
 	TakeDown(w http.ResponseWriter, r *http.Request)
 }
+
+type ApplicantFindJob interface {
+	GetJobs(w http.ResponseWriter,r *http.Request)
+	Recomentdation(w http.ResponseWriter, r *http.Request)
+}

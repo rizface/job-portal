@@ -20,3 +20,7 @@ func GetTokenValue(claim interface{}, key string) string {
 	}
 	return data[key].(string)
 }
+
+func GetQuery(r *http.Request, key string) string {
+	return r.URL.Query().Get(key)
+}

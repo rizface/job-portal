@@ -2,15 +2,15 @@ package exception
 
 import "net/http"
 
-type NotFouund struct {
+type NotFound struct {
 	Err string
 }
 
-func (nf NotFouund) Code() int {
+func (nf NotFound) Code() int {
 	return http.StatusNotFound
 }
 
-func (nf NotFouund) Error() string {
+func (nf NotFound) Error() string {
 	return nf.Err
 }
 

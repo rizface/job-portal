@@ -1,16 +1,24 @@
 package response
 
 import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
 
+type MinQualification struct {
+	Requirements []string `json:"requirements" bson:"requirements"`
+	Prefered     []string `json:"prefered" bson:"prefered"`
+}
+
 type Job struct {
-	Id        primitive.ObjectID `json:"id" bson:"_id"`
-	Title     string             `json:"title"  bson:"title""`
-	Detail    string             `json:"detail" bson:"detail"`
-	MinSalary interface{}        `json:"min_salary" bson:"min_salary"`
-	MaxSalary interface{}        `json:"max_salary" bson:"max_salary"`
-	Status    bool               `json:"status" bson:"status"`
-	CreatedAt time.Time          `json:"created_at" bson:"created_at"`
+	Id               string           `json:"id,omitempty"  bson:"_id"`
+	Title            string           `json:"title,omitempty"  bson:"title" validate:"required"`
+	Location         string           `json:"location,omitempty" bson:"location"`
+	MinSalary        int64            `json:"min_salary,omitempty" bson:"min_salary"`
+	MaxSalary        int64            `json:"max_salary,omitempty" bson:"max_salary"`
+	Type             string           `json:"type,omitempty" bson:"type"`
+	JobDescription   string           `json:"job_description,omitempty" bson:"job_description"`
+	MinQualification *MinQualification `json:"min_qualification,omitempty" bson:"min_qualification"`
+	Applicants       []Applicant      `json:"applicants,omitempty" bson:"applicants"`
+	Status           bool             `bson:"status"`
+	CreatedAt        time.Time        `bson:"created_at"`
 }

@@ -34,19 +34,19 @@ func NewProfile(db *mongo.Database, valid *validator.Validate, repo profile_repo
 func (p *profile) GetDetail(userId string) model.Object {
 	applicant := response.NewApplicant()
 	valid := primitive.IsValidObjectID(userId)
-	helper.PanicException(exception.NotFouund{Err:"akun tidak ditemukan"}, valid == false)
+	helper.PanicException(exception.NotFound{Err: "akun tidak ditemukan"}, valid == false)
 	ctx,cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()
 	cursor := p.repo.GetProfile(ctx,p.db,userId)
 	err := cursor.Decode(applicant)
-	helper.PanicException(exception.NotFouund{Err:"akun tidak ditemukan"}, err != nil)
+	helper.PanicException(exception.NotFound{Err: "akun tidak ditemukan"}, err != nil)
 	return applicant
 
 }
 
 func (p *profile) UpdateDetail(userId string, user model.Object) string {
 	valid := primitive.IsValidObjectID(userId)
-	helper.PanicException(exception.NotFouund{Err:"akun tidak ditemukan"}, valid == false)
+	helper.PanicException(exception.NotFound{Err: "akun tidak ditemukan"}, valid == false)
 	err := p.valid.Struct(user)
 	if err != nil {
 		validation.Validation(err)

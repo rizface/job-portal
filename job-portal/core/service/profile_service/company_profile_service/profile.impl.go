@@ -33,12 +33,12 @@ func NewProfile(db *mongo.Database, valid *validator.Validate, repo profile_repo
 func (p *profile) GetDetail(userId string) model.Object {
 	company := response.NewCompany()
 	valid := primitive.IsValidObjectID(userId)
-	helper.PanicException(exception.NotFouund{Err:"akun tidak ditemukan"}, valid == false)
+	helper.PanicException(exception.NotFound{Err: "akun tidak ditemukan"}, valid == false)
 	ctx,cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()
 	cursor := p.repo.GetProfile(ctx,p.db,userId)
 	err := cursor.Decode(company)
-	helper.PanicException(exception.NotFouund{Err:"akun tidak ditemukan"}, err != nil)
+	helper.PanicException(exception.NotFound{Err: "akun tidak ditemukan"}, err != nil)
 	return company
 
 }
@@ -49,7 +49,7 @@ func (p *profile) UpdateDetail(userId string, user model.Object) string {
 	if err != nil {
 		validation.Validation(err)
 	}
-	helper.PanicException(exception.NotFouund{Err:"akun tidak ditemukan"}, valid == false)
+	helper.PanicException(exception.NotFound{Err: "akun tidak ditemukan"}, valid == false)
 	ctx,cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()
 	bsonUser := user.Convert()

@@ -28,8 +28,9 @@ func (j *jobManipulation) PostJob(w http.ResponseWriter, r *http.Request) {
 }
 
 func (j *jobManipulation) DetailJob(w http.ResponseWriter, r *http.Request) {
+	level := helper.GetTokenValue(r.Context().Value("mix-data"),"Level")
 	jobId := helper.GetParamsValue(r,"jobId")
-	result := j.service.DetailJob(jobId)
+	result := j.service.DetailJob(jobId,level)
 	helper.JsonWriter(w,http.StatusOK,"success",map[string]interface{}{
 		"job":result,
 	})
