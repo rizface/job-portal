@@ -48,15 +48,19 @@ func (a *auth) Login(request request.Auth, collection string) string {
 }
 
 func (a *auth) Register(request request.Auth, collection string) string {
+	ctx,cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	err := a.valid.Struct(request)
 	if err != nil {
 		validation.Validation(err)
 	}
+
+	exists := a.repo.Login(a.db,ctx,request,"companies")
+	helper.PanicException(exception.Conflict{Err:"akun ini sudah terdaftar"}, exists.Err() == nil)
+
 	hash,err := helper.GeneratePassword(request.Password)
 	helper.PanicException(exception.InternalServerError{Err:"terjadi kesalahan pada sistem kami"}, err != nil)
 	request.Password = hash
 	request.Level = "company"
-	ctx,cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()
 	insertId,err := a.repo.Register(a.db,ctx,request,collection)
 	helper.PanicException(exception.InternalServerError{Err:"terjadi kesalahan pada sistem kami"}, err != nil)

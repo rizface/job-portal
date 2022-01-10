@@ -2,6 +2,7 @@ package job_repo
 
 import (
 	"context"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -17,7 +18,7 @@ func NewManipulationJob() job_interface.ManipulationJob {
 	return &manipulationJob{}
 }
 
-func (m manipulationJob) PostJob(db *mongo.Database, ctx context.Context, companyName string, request request.Job) (interface{}, error) {
+func (m *manipulationJob) PostJob(db *mongo.Database, ctx context.Context, companyName string, request request.Job) (interface{}, error) {
 	data := request.Convert()
 	data["_id"] = primitive.NewObjectID()
 	data["company"] = companyName
@@ -28,7 +29,7 @@ func (m manipulationJob) PostJob(db *mongo.Database, ctx context.Context, compan
 	return result.InsertedID, nil
 }
 
-func (m manipulationJob) DetailJob(db *mongo.Database, ctx context.Context, jobId string, isCompany bool) *mongo.SingleResult {
+func (m *manipulationJob) DetailJob(db *mongo.Database, ctx context.Context, jobId string, isCompany bool) *mongo.SingleResult {
 	var cursor *mongo.SingleResult
 	objJob, _ := primitive.ObjectIDFromHex(jobId)
 	if isCompany {
@@ -41,7 +42,7 @@ func (m manipulationJob) DetailJob(db *mongo.Database, ctx context.Context, jobI
 	return cursor
 }
 
-func (m manipulationJob) DeleteJob(db *mongo.Database, ctx context.Context, companyName, jobId string) (bool, error) {
+func (m *manipulationJob) DeleteJob(db *mongo.Database, ctx context.Context, companyName, jobId string) (bool, error) {
 	objJob, _ := primitive.ObjectIDFromHex(jobId)
 	result, err := db.Collection("jobs").DeleteMany(ctx, bson.M{
 		"$and": bson.A{
@@ -55,8 +56,10 @@ func (m manipulationJob) DeleteJob(db *mongo.Database, ctx context.Context, comp
 	return result.DeletedCount > 0, nil
 }
 
-func (m manipulationJob) UpdateJob(db *mongo.Database, ctx context.Context, request request.Job, companyName, jobId string) (bool, error) {
+func (m *manipulationJob) UpdateJob(db *mongo.Database, ctx context.Context, request request.Job, companyName, jobId string) (bool, error) {
+	fmt.Println(request.MinQualification)
 	objJob, _ := primitive.ObjectIDFromHex(jobId)
+	fmt.Println(companyName)
 	result, err := db.Collection("jobs").UpdateOne(ctx, bson.M{
 		"$and": bson.A{
 			bson.M{"_id": objJob},
@@ -79,7 +82,7 @@ func (m manipulationJob) UpdateJob(db *mongo.Database, ctx context.Context, requ
 	return result.ModifiedCount > 0, err
 }
 
-func (m manipulationJob) TmpTakeDown(db *mongo.Database, ctx context.Context, current response.Job, companyName string) (bool, error) {
+func (m *manipulationJob) TmpTakeDown(db *mongo.Database, ctx context.Context, current response.Job, companyName string) (bool, error) {
 	objId,_ := primitive.ObjectIDFromHex(current.Id)
 	result, err := db.Collection("jobs").UpdateOne(ctx, bson.M{
 		"$and": bson.A{

@@ -2,7 +2,6 @@ package company_repo_profile
 
 import (
 	"context"
-	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -29,7 +28,6 @@ func (p profile) GetProfile(ctx context.Context, db *mongo.Database, userId stri
 
 func (p profile) UpdateProfile(ctx context.Context, db *mongo.Database, userId string, data bson.M) (bool, error) {
 	objId,err := primitive.ObjectIDFromHex(userId)
-	fmt.Println(objId)
 	helper.PanicException(exception.InternalServerError{Err:"terjadi kesalahan pada sistem kami"}, err != nil)
 	result,err := db.Collection("companies").UpdateOne(ctx,bson.M{
 		"_id":bson.M{"$eq":objId},

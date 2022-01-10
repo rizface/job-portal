@@ -3,7 +3,6 @@ package applicant_auth_service
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/mongo"
 	"job-portal/app/exception"
@@ -49,18 +48,20 @@ func (a *auth) Login(request request.Auth,collection string) string {
 }
 
 func (a *auth) Register(request request.Auth,collection string) string {
+	ctx,cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	err := a.valid.Struct(request)
 	if err != nil {
 		validation.Validation(err)
 	}
+	exists := a.repo.Login(a.db,ctx,request,"applicants")
+	helper.PanicException(exception.Conflict{Err:"akun ini sudah terdaftar"}, exists.Err() == nil)
+
 	hash,err := helper.GeneratePassword(request.Password)
 	helper.PanicException(exception.InternalServerError{Err:"terjadi kesalahan pada sistem kami"}, err != nil)
 	request.Password = hash
 	request.Level = "applicant"
-	ctx,cancel := context.WithTimeout(context.Background(),10 * time.Second)
 	defer cancel()
 	insertId,err := a.repo.Register(a.db,ctx,request,collection)
-	fmt.Println(insertId)
 	helper.PanicException(exception.InternalServerError{Err:"terjadi kesalahan pada sistem kami"}, err != nil)
 	activateUrl := "applicant/"+insertId.(string)
 	myredis.RedisPublish("job-portal-email",request.Email,activateUrl)

@@ -2,7 +2,6 @@ package job_service
 
 import (
 	"context"
-	"fmt"
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/mongo"
 	"job-portal/app/exception"
@@ -33,7 +32,6 @@ func (f *findJob) GetJobs(filter request.Filter) []response.Job {
 	ctx,cancel := context.WithTimeout(context.Background(), 10 * time.Second)
 	defer cancel()
 	cursor,err := f.repo.GetJob(f.db,ctx,filter)
-	fmt.Println(err)
 	helper.PanicException(exception.InternalServerError{Err:"terjadi kesalahan pada sistem kami"}, err != nil)
 	err = cursor.All(ctx,&result)
 	helper.PanicException(exception.InternalServerError{Err:"terjadi kesalahan pada sistem kami"}, err != nil)

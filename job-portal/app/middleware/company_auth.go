@@ -15,6 +15,9 @@ func CompanyAuth(next http.Handler) http.Handler {
 		items := strings.Split(token," ")
 		helper.PanicException(exception.UnAuthorized{Err:"token kamu tidak valid"},len(items) != 2)
 		claim := helper.VerifyCompanyToken(items[1])
+		if claim.(*helper.Company).Level != "company" {
+			helper.PanicException(exception.Forbidden{Err:"kamu tidak punya akses ke fitur ini"},true)
+		}
 		request = request.WithContext(context.WithValue(request.Context(),"company-data",claim))
 		next.ServeHTTP(writer,request)
 	})

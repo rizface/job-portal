@@ -34,7 +34,7 @@ func GetPrevNext(length,skip,limit int) (string,string) {
 
 func buildSearch(filter *request.Filter, keyword string){
 	if len(keyword) == 0 {
-		filter.Keyword = bson.M{}
+		filter.Keyword = bson.M{"$search":"lowongan backend frontend engineer indonesia jakarta fulltime full time internship magang kontrak"}
 	} else {
 		filter.Keyword = bson.M{"$search":keyword}
 	}

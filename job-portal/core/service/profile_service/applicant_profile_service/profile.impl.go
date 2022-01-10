@@ -2,7 +2,6 @@ package applicant_profile_service
 
 import (
 	"context"
-	"fmt"
 	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -55,7 +54,6 @@ func (p *profile) UpdateDetail(userId string, user model.Object) string {
 	defer cancel()
 	bsonUser := user.Convert()
 	success,err := p.repo.UpdateProfile(ctx,p.db,userId,bsonUser)
-	fmt.Println(err)
 	helper.PanicException(exception.InternalServerError{Err: "terjadi kesalahan pada sistem kami"}, err != nil)
 	if success == false {
 		return "akun gagal diupdate"

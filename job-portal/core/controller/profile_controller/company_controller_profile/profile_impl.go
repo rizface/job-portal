@@ -2,7 +2,6 @@ package company_controller_profile
 
 import (
 	"encoding/json"
-	"fmt"
 	"job-portal/app/exception"
 	"job-portal/app/model/request"
 	"job-portal/core/controller/profile_controller"
@@ -32,7 +31,6 @@ func (p *profile) GetDetail(w http.ResponseWriter, r *http.Request) {
 func (p *profile) UpdateDetail(w http.ResponseWriter, r *http.Request) {
 	company := request.NewCompany()
 	userId := helper.GetTokenValue(r.Context().Value("company-data"),"id")
-	fmt.Println(userId)
 	err := json.NewDecoder(r.Body).Decode(company)
 	helper.PanicException(exception.InternalServerError{Err:"terjadi kesalahan pada sistem kami"}, err != nil)
 	result := p.service.UpdateDetail(userId, company)

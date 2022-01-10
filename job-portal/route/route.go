@@ -23,7 +23,7 @@ const(
 	MY_JOBS = "/jobs/applied"
 	MY_JOB_MANIPULATION = "/jobs/{jobId}/applied" // CANCEL PROPOSE, UPDATE PROPOSE DATA
 
-	COMPANY_JOBS = "/jobs/{companyId}" // GET ALL POSTED JOBS BY COMPANY
+	COMPANY_JOBS = "/company/{companyId}/jobs/" // GET ALL POSTED JOBS BY COMPANY
 	JOBSS_APPLICANT = "/jobs/{jobId}/applicants"
 	JOBS_APPLICANT_MANIPULATION = "/jobs/{jobId}/applicants/{applicanId}" // REJECT APPLICANT OR GIVE INFORMATION VIA EMAIL
 

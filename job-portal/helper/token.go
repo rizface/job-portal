@@ -2,7 +2,6 @@ package helper
 
 import (
 	"errors"
-	"fmt"
 	"github.com/golang-jwt/jwt/v4"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"job-portal/app/exception"
@@ -67,7 +66,6 @@ func VerifyApplicantToken(tokenString string) interface{} {
 	tkn, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secret), nil
 	})
-	fmt.Println(tkn.Valid)
 	PanicException(exception.UnAuthorized{Err: "token tidak valid"}, tkn.Valid == false || err != nil && errors.Is(err, jwt.ErrSignatureInvalid))
 	PanicException(exception.UnAuthorized{Err: "terjadi kesalahan pada sistem kami"}, err != nil)
 	return claims

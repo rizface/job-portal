@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"context"
-	"fmt"
 	"job-portal/app/exception"
 	"job-portal/helper"
 	"net/http"
@@ -17,7 +16,6 @@ func MixAuth(next http.Handler) http.Handler {
 		helper.PanicException(exception.UnAuthorized{Err:"token kamu tidak valid"},len(items) != 2)
 		claim := helper.VerifyApplicantToken(items[1])
 		level := claim.(*helper.Applicant).Level
-		fmt.Println(level)
 		if  level != "applicant" && level != "company"{
 			panic(exception.Forbidden{Err:"kamu tidak punya akses kesini"})
 		}
